@@ -1,26 +1,43 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Container, Flex, Text } from '@chakra-ui/react';
 
-function App() {
+import {
+  DetailedChart,
+  SelectSymbols,
+  SubscribeButton,
+  SymbolDetailedInfo,
+} from './components';
+import { useFetchContext } from './context';
+
+const App = () => {
+  const {
+    selectedValue,
+    isSubscribed,
+    toggleSubscribeClick,
+    chartInfoLoading,
+    detailedSymbolsInfo,
+  } = useFetchContext();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Container centerContent maxW="container.lg" marginTop="20">
+      <Flex align="center" justifyContent="space-between" width="full">
+        <SelectSymbols />
+        <SubscribeButton
+          onClick={toggleSubscribeClick}
+          disabled={!selectedValue}
+          isLoading={chartInfoLoading && detailedSymbolsInfo}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          {!isSubscribed ? 'Subscribe' : 'Unsubscribe'}
+        </SubscribeButton>
+      </Flex>
+      <SymbolDetailedInfo {...selectedValue} />
+      {selectedValue ? (
+        <DetailedChart />
+      ) : (
+        <Text width="full">Select any symbol to see prices chart</Text>
+      )}
+    </Container>
   );
-}
+};
 
-export default App;
+export { App };
